@@ -3,3 +3,9 @@
 <p>Which license do you want applied to your public repositories?</p>
 
 <p>Here's a list of your public repositories:</p>
+
+<ul>
+	<% public_repos.each do |repo| %>
+		<li><a href="<%= repo.html_url %>"> <%= repo.name %></a></li>
+  <% end %>
+</ul>

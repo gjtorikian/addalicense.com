@@ -1,6 +1,6 @@
 require 'sinatra/auth/github'
 require 'sinatra/assetpack'
-require 'rest-client'
+require 'octokit'
 require 'redcarpet'
 require 'sass'
 
@@ -54,8 +54,8 @@ class AddALicense < Sinatra::Base
     if !authenticated?
       authenticate!
     else
-      p github_user
-      erb :index, :locals => { :login => github_user.login, :name => github_user.name }
+      @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
+      erb :index, :locals => { :login => github_user.login, :name => github_user.name, :public_repos => @octokit.repositories }
     end
   end
 

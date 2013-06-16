@@ -16,7 +16,6 @@ GEM
     hashie (2.0.5)
     jsmin (1.0.1)
     json (1.7.7)
-    liquid (2.5.0)
     mime-types (1.23)
     multi_json (1.7.7)
     multipart-post (1.2.0)
@@ -65,7 +64,6 @@ PLATFORMS
 DEPENDENCIES
   coffee-script (= 2.2.0)
   json (= 1.7.7)
-  liquid (= 2.5.0)
   redcarpet (= 2.2.2)
   rest-client (~> 1.6.3)
   sass (= 3.2.9)
