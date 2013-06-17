@@ -10,7 +10,7 @@ class AddALicense < Sinatra::Base
   enable :sessions
 
   DEPENDENCY_PATH = File.join(File.dirname(__FILE__), "deps", "choosealicense.com")
-  LICENSES_HASH = Psych.load(File.read(File.join(File.dirname(__FILE__), "deps", "licenses.yml")))
+  LICENSES_HASH = YAML.load(File.read(File.join(File.dirname(__FILE__), "deps", "licenses.yml")))
 
   configure :development, :testing do
     set :session_secret, "JUST_FOR_FIXING"
@@ -56,6 +56,7 @@ class AddALicense < Sinatra::Base
   set :markdown, :layout_engine => :erb
 
   get '/' do
+    p LICENSES_HASH
     erb :index
   end
 
