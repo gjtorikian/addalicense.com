@@ -6,7 +6,7 @@
 <p id="license-container">
   <select id="license-spinner">
     <% licenses.each do |license|  %>
-      <option value="<%= license[:link] %>"><%= license[:title] %></option>
+      <option name="license" value="<%= license[:link] %>"><%= license[:title] %></option>
     <% end %>
   </select>
   <span id="license-selection"></span>

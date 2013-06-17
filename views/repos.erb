@@ -2,7 +2,7 @@
   <% @octokit.repositories.each_with_index do |repo, idx| %>
     <% if !has_license?(repo) %>
       <li>
-        <input type="checkbox" id="repo_<%= idx %>" value="<%= repo.name %>">
+        <input type="checkbox" name="repositories[]" id="repo_<%= idx %>" value="<%= repo.full_name %>">
           <label for="repo_<%= idx %>">
             <a href="<%= repo.html_url %>"> <%= repo.full_name %></a>
           </label>
@@ -11,4 +11,6 @@
   <% end %>
 </ul>
 
-<input type="submit" value="Add licenses!" />
+<button type="submit" class="large pink btn icon-and-text position-left">
+  Add licenses!
+</button>
