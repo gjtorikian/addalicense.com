@@ -1,12 +1,12 @@
-<h1>Hello, <%= login %>!</h1>
+<h1>Let's go, <%= login %>!</h1>
 
 <p>Which license do you want applied to your public repositories?</p>
 
 <form action="/add-licenses" method="post">
 <p id="license-container">
-  <select id="license-spinner">
+  <select name="license" id="license-spinner">
     <% licenses.each do |license|  %>
-      <option name="license" value="<%= license[:link] %>"><%= license[:title] %></option>
+      <option value="<%= license[:link] %>"><%= license[:title] %></option>
     <% end %>
   </select>
   <span id="license-selection"></span>

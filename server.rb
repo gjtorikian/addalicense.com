@@ -4,13 +4,14 @@ require 'octokit'
 require 'redcarpet'
 require 'sass'
 require 'yaml'
+require 'digest/sha1' 
 
 class AddALicense < Sinatra::Base
   set :root, File.dirname(__FILE__)
   enable :sessions
 
-  DEPENDENCY_PATH = File.join(File.dirname(__FILE__), "deps", "choosealicense.com")
-  LICENSES_HASH = YAML.load(File.read(File.join(File.dirname(__FILE__), "deps", "licenses.yml")))
+  DEPENDENCY_PATH = File.join(File.dirname(__FILE__), "deps")
+  LICENSES_HASH = YAML.load(File.read(File.join(DEPENDENCY_PATH, "licenses.yml")))
 
   configure :development, :testing do
     set :session_secret, "JUST_FOR_FIXING"
@@ -44,7 +45,10 @@ class AddALicense < Sinatra::Base
 
   # trim trailing slashes
   before do
-    @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
+    if authenticated?
+      @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
+    end
+
     request.path_info.sub! %r{/$}, ''
   end
 
@@ -56,7 +60,6 @@ class AddALicense < Sinatra::Base
   set :markdown, :layout_engine => :erb
 
   get '/' do
-    p LICENSES_HASH
     erb :index
   end
 
@@ -81,11 +84,30 @@ class AddALicense < Sinatra::Base
   end
 
   post '/add-licenses' do
-    params.inspect
+    year = Time.new.year.to_s
+    license = File.read(File.join(DEPENDENCY_PATH, "licenses", "#{params['license']}.txt"))
+    license = license.gsub(/<<year>>/, year).gsub(/<<fullname>>/, github_user.name)
+
+    params["repositories"].each do |repository|
+      header = "blob #{license.size}\0#{license}"
+      sha1 = Digest::SHA1.hexdigest(header)
+      @octokit.create_content(repository, "LICENSE", "Adding LICENSE file via addalicense.com", { :content => sha1 })
+    end
+
+    redirect '/finished'
+  end
+
+  get '/finished' do
+    markdown :finished
   end
 
   get '/about' do
     markdown :about
+  end
+
+  get '/logout' do
+    logout!
+    redirect '/'
   end
 
   helpers do
