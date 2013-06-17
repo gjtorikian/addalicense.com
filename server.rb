@@ -4,7 +4,7 @@ require 'octokit'
 require 'redcarpet'
 require 'sass'
 require 'yaml'
-require 'digest/sha1' 
+require "base64"
 
 class AddALicense < Sinatra::Base
   set :root, File.dirname(__FILE__)
@@ -67,7 +67,7 @@ class AddALicense < Sinatra::Base
     if !authenticated?
       authenticate!
     else
-      erb :add, :locals => { :login => github_user.login, :licenses => LICENSES_HASH, :octokit => @octokit }
+      erb :add, :locals => { :login => github_user.login, :licenses => LICENSES_HASH }
     end
   end
 
@@ -80,7 +80,7 @@ class AddALicense < Sinatra::Base
   end
 
   get '/repos' do
-    erb :repos, :layout => false, :locals => { :login => github_user.login, :name => github_user.name, :octokit => @octokit }
+    erb :repos, :layout => false, :locals => { :login => github_user.login, :octokit => @octokit }
   end
 
   post '/add-licenses' do
@@ -89,9 +89,7 @@ class AddALicense < Sinatra::Base
     license = license.gsub(/<<year>>/, year).gsub(/<<fullname>>/, github_user.name)
 
     params["repositories"].each do |repository|
-      header = "blob #{license.size}\0#{license}"
-      sha1 = Digest::SHA1.hexdigest(header)
-      @octokit.create_content(repository, "LICENSE", "Adding LICENSE file via addalicense.com", { :content => sha1 })
+      @octokit.create_content(repository, "LICENSE", "Add LICENSE file via addalicense.com", license )
     end
 
     redirect '/finished'
