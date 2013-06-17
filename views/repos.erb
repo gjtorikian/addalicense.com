@@ -1,3 +1,7 @@
+<div id="#repo-controls">
+  <a href="#" id="select-all-repos">Select All</a> / <a href="#" id="unselect-all-repos">Select None</a>
+</div>
+
 <ul>
   <% @octokit.repositories.each_with_index do |repo, idx| %>
     <% if !has_license?(repo) %>

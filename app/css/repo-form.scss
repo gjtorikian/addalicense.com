@@ -26,3 +26,6 @@
   text-shadow: 0 1px 0 rgba(#fff, 0.8);
   display: none;
 }
+
+.alert:first-child { margin-top: 0 }
+.alert:last-child { margin-bottom: 0 }
