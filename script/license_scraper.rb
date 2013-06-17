@@ -23,7 +23,8 @@ licenses.each do |license|
   s.scan_until(/\-{3}/)
   
   File.open(File.join(root, "deps", "licenses", "#{link}.txt"), "w") do |f|
-    f.write(s.post_match().strip)
+    # this ensures licenses like GPL still have centered text
+    f.write(s.post_match().gsub(/^\r\n/, "").gsub(/\r\n$/, ""))
   end
 
   license_array << { :title => title, :link => link}
