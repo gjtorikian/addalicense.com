@@ -9,3 +9,20 @@
     display: none;
   }
 }
+
+#form-error {
+  position:relative;
+  margin:0 auto;
+  padding:5px;
+  font-size:12px;
+  color:#9c2400;
+  border: 1px solid #da9797;
+  border-radius: 3px;
+  background-color: #f8d8d8;
+  background: -moz-linear-gradient(#f8d8d8, #efd0d0); 
+  background: -webkit-linear-gradient(#f8d8d8, #efd0d0);
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f8d8d8', endColorstr='#efd0d0')"; /* IE8+ */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  text-shadow: 0 1px 0 rgba(#fff, 0.8);
+  display: none;
+}

@@ -2,7 +2,7 @@
 
 <p>Which license do you want applied to your public repositories?</p>
 
-<form action="/add-licenses" method="post">
+<form name="license-form" action="/add-licenses" method="post">
 <p id="license-container">
   <select name="license" id="license-spinner">
     <% licenses.each do |license|  %>
@@ -20,5 +20,5 @@
 </p>
 
 </div>
-
+<div id="form-error"></div>
 </form>
