@@ -86,7 +86,7 @@ class AddALicense < Sinatra::Base
   post '/add-licenses' do
     year = Time.new.year.to_s
     license = File.read(File.join(DEPENDENCY_PATH, "licenses", "#{params['license']}.txt"))
-    license = license.gsub(/<<year>>/, year).gsub(/<<fullname>>/, github_user.name)
+    license = license.gsub(/<<year>>/, year).gsub(/<<fullname>>/, github_user.name).strip
 
     params["repositories"].each do |repository|
       @octokit.create_content(repository, "LICENSE", "Add LICENSE file via addalicense.com", license )
