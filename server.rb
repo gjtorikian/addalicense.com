@@ -89,7 +89,7 @@ class AddALicense < Sinatra::Base
     license = license.gsub(/<<year>>/, year).gsub(/<<fullname>>/, github_user.name)
 
     params["repositories"].each do |repository|
-      @octokit.create_content(repository, "LICENSE", "Add LICENSE file via addalicense.com", license )
+      @octokit.create_content(repository, "LICENSE.txt", "Add LICENSE file via addalicense.com", license )
     end
 
     redirect '/finished'
