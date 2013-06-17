@@ -3,7 +3,7 @@
 require 'yaml'
 
 `git submodule init`
-`git submodule update`
+`git submodule update --recursive`
 
 root = File.join(File.dirname(__FILE__), "..")
 license_dir = File.join(root, "deps", "choosealicense.com", "licenses")
