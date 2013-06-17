@@ -1,11 +1,9 @@
-<h1> Hello, <%= login %>!</h1>
+<h1>Add A License</h1>
 
-<p>Which license do you want applied to your public repositories?</p>
+<p>We want to help developers choose a license for their source code.</p>
 
-<p>Here's a list of your public repositories:</p>
+<p>If you already know what you’re doing and have a license you prefer to use, that’s great! We’re not here to change your mind. But if you are bewildered by the large number of OSS license choices, maybe we can help.</p>
 
-<ul>
-	<% public_repos.each do |repo| %>
-		<li><a href="<%= repo.html_url %>"> <%= repo.name %></a></li>
-  <% end %>
-</ul>
+<p>This site is meant to be accompanied by a thorough reading of <a href="http://www.choosealicense.com">choosealicense.com</a>. This site is <em>not</em> affilaited with GitHub.
+
+<h3>Ready to get started? <a href="/add">Let's get adding!</a></h3>

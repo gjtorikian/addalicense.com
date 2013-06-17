@@ -7,7 +7,6 @@ gem 'redcarpet',  '=2.2.2'
 gem 'sass', '3.2.9'
 gem 'coffee-script', '2.2.0'
 gem "json",        "1.7.7"
-gem 'rest-client', '~> 1.6.3'
 
 group :development do
   gem 'shotgun', '0.9'

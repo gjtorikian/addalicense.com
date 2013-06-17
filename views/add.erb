@@ -1,0 +1,24 @@
+<h1>Hello, <%= login %>!</h1>
+
+<p>Which license do you want applied to your public repositories?</p>
+
+<form action="/add-licenses" method="post">
+<p id="license-container">
+  <select id="license-spinner">
+    <% licenses.each do |license|  %>
+      <option value="<%= license[:link] %>"><%= license[:title] %></option>
+    <% end %>
+  </select>
+  <span id="license-selection"></span>
+</p>
+
+<div id="repo-container">
+
+<p class='spinner'>
+  <img src='images/octocat-spinner-32.gif'>
+  Fetching your public repositories... 
+</p>
+
+</div>
+
+</form>

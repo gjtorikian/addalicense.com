@@ -3,10 +3,14 @@ require 'sinatra/assetpack'
 require 'octokit'
 require 'redcarpet'
 require 'sass'
+require 'yaml'
 
 class AddALicense < Sinatra::Base
   set :root, File.dirname(__FILE__)
   enable :sessions
+
+  DEPENDENCY_PATH = File.join(File.dirname(__FILE__), "deps", "choosealicense.com")
+  LICENSES_HASH = Psych.load(File.read(File.join(File.dirname(__FILE__), "deps", "licenses.yml")))
 
   configure :development, :testing do
     set :session_secret, "JUST_FOR_FIXING"
@@ -40,6 +44,7 @@ class AddALicense < Sinatra::Base
 
   # trim trailing slashes
   before do
+    @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
     request.path_info.sub! %r{/$}, ''
   end
 
@@ -51,20 +56,31 @@ class AddALicense < Sinatra::Base
   set :markdown, :layout_engine => :erb
 
   get '/' do
+    erb :index
+  end
+
+  get '/add' do
     if !authenticated?
       authenticate!
     else
-      @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
-      erb :index, :locals => { :login => github_user.login, :name => github_user.name, :public_repos => @octokit.repositories }
+      erb :add, :locals => { :login => github_user.login, :licenses => LICENSES_HASH, :octokit => @octokit }
     end
   end
 
   get '/callback' do
     if authenticated?
-      redirect "/"
+      redirect "/add"
     else
       authenticate!
     end
+  end
+
+  get '/repos' do
+    erb :repos, :layout => false, :locals => { :login => github_user.login, :name => github_user.name, :octokit => @octokit }
+  end
+
+  post '/add-licenses' do
+    params.inspect
   end
 
   get '/about' do
@@ -74,6 +90,15 @@ class AddALicense < Sinatra::Base
   helpers do
     def title(number=nil)
       title = "Add a License"
+    end
+
+    def has_license?(repo)
+      begin
+        root_contents = @octokit.contents(repo.full_name)
+        root_contents.any? {|f| f[:name] =~ /LICENSE\.?/}
+      rescue Octokit::NotFound
+        false
+      end
     end
   end
 end

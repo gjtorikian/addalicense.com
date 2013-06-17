@@ -1,0 +1,11 @@
+#repo-container {
+  &.is-loading {
+    .spinner {
+      display: block;
+    }
+  }
+
+  .spinner {
+    display: none;
+  }
+}
