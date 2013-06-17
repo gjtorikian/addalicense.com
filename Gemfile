@@ -8,6 +8,7 @@ gem 'sass', '3.2.9'
 gem 'coffee-script', '2.2.0'
 gem "json",        "1.7.7"
 gem "octokit",    :git => "https://github.com/octokit/octokit.rb.git"
+gem 'thin', '1.5.1'
 
 group :development do
   gem 'shotgun', '0.9'

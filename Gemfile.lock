@@ -19,6 +19,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.2)
+    daemons (1.1.9)
+    eventmachine (1.0.3)
     execjs (1.4.0)
       multi_json (~> 1.0)
     faraday (0.8.7)
@@ -53,6 +55,10 @@ GEM
     sinatra_auth_github (0.13.3)
       sinatra (~> 1.0)
       warden-github (~> 0.13.1)
+    thin (1.5.1)
+      daemons (>= 1.0.9)
+      eventmachine (>= 0.12.6)
+      rack (>= 1.0.0)
     tilt (1.4.1)
     warden (1.2.1)
       rack (>= 1.0)
@@ -73,3 +79,4 @@ DEPENDENCIES
   sinatra (= 1.4.2)
   sinatra-assetpack (= 0.2.2)
   sinatra_auth_github (~> 0.13.3)
+  thin (= 1.5.1)
