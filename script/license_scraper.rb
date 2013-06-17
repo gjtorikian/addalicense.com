@@ -23,7 +23,7 @@ licenses.each do |license|
   s.scan_until(/\-{3}/)
   
   File.open(File.join(root, "deps", "licenses", "#{link}.txt"), "w") do |f|
-    f.write(s.post_match())
+    f.write(s.post_match().strip)
   end
 
   license_array << { :title => title, :link => link}
