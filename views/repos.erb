@@ -8,7 +8,7 @@
       <li>
         <input type="checkbox" name="repositories[]" id="repo_<%= idx %>" value="<%= repo.full_name %>">
           <label for="repo_<%= idx %>">
-            <%= repo.full_name %>
+            <strong><%= repo.full_name %></strong>
             <% if repo.description && repo.description.length > 0 %>
              - <%= repo.description.length > 80 ? repo.description[0..77].strip + "..." : repo.description %>
             <% end %>
