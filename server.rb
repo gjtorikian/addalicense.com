@@ -114,10 +114,10 @@ class AddALicense < Sinatra::Base
       title = "Add a License"
     end
 
+    # rescue block is needed in case a repo is completely empty
     def has_license?(repo)
       begin
-        root_contents = @octokit.contents(repo.full_name)
-        root_contents.any? {|f| f[:name] =~ /LICENSE\.?/}
+        @octokit.contents(repo.full_name).any? {|f| f[:name] =~ /LICENSE\.?/i}
       rescue Octokit::NotFound
         false
       end
