@@ -5,6 +5,7 @@ require 'redcarpet'
 require 'sass'
 require 'yaml'
 require "base64"
+require "typhoeus"
 
 class AddALicense < Sinatra::Base
   set :root, File.dirname(__FILE__)
@@ -114,13 +115,32 @@ class AddALicense < Sinatra::Base
       title = "Add a License"
     end
 
+    # doing it in parallel is way more performant
     # rescue block is needed in case a repo is completely empty
-    def has_license?(repo)
-      begin
-        @octokit.contents(repo.full_name).any? {|f| f[:name] =~ /LICENSE\.?/i}
-      rescue Octokit::NotFound
-        false
+    def repositories_missing_licenses
+      public_repos = []
+      hydra = Typhoeus::Hydra.hydra
+      @octokit.repositories.each_with_index do |repo, idx|
+        request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=6dcb06ac5641729c8e9153fde963c9dc3c434431")
+        request.on_complete do |response|
+          if response.success?
+            public_repos << repo unless JSON.load(response.response_body).any? {|f| f["name"] =~ /^LICENSE\.?/i}
+          elsif response.timed_out?
+            p "#{repo.full_name} got a time out"
+          elsif response.code == 0
+            # Could not get an http response, something's wrong.
+            p "#{repo.full_name} " + response.curl_error_message
+          elsif response.code == 404
+            # don't worry about it; the repo is probably empty
+          else
+            # Received a non-successful http response.
+            p "#{repo.full_name} HTTP request failed: " + response.code.to_s
+          end
+        end
+        hydra.queue(request)
       end
+      hydra.run
+      return public_repos.sort_by { |r| r['full_name'] }
     end
   end
 end
