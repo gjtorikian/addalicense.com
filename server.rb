@@ -60,7 +60,7 @@ class AddALicense < Sinatra::Base
   set :markdown, :layout_engine => :erb
 
   get '/' do
-    erb :index
+    markdown :index
   end
 
   get '/add' do
