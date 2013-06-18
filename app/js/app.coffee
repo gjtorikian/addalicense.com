@@ -22,6 +22,11 @@ $(document).ready ->
         $(this).closest('form').find(':checkbox').prop('checked', true);
         return false
 
+      $('#select-non-forks').click ->
+        $(this).closest('form').find(':checkbox').prop('checked', false);
+        $(this).closest('form').find(':checkbox.non_fork').prop('checked', true);
+        return false
+
       $('#unselect-all-repos').click ->
         $(this).closest('form').find(':checkbox').prop('checked', false);
         return false

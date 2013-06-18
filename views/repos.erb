@@ -1,12 +1,12 @@
 <div id="#repo-controls">
-  <a href="#" id="select-all-repos">Select All</a> / <a href="#" id="unselect-all-repos">Select None</a>
+  <a href="#" id="select-non-forks">Select Non-Forks</a> / <a href="#" id="select-all-repos">Select All</a> / <a href="#" id="unselect-all-repos">Select None</a>
 </div>
 
 <ul>
   <% @octokit.repositories.each_with_index do |repo, idx| %>
     <% if !has_license?(repo) %>
       <li>
-        <input type="checkbox" name="repositories[]" id="repo_<%= idx %>" value="<%= repo.full_name %>">
+        <input type="checkbox" name="repositories[]" id="repo_<%= idx %>" value="<%= repo.full_name %>" class="<%= repo.fork ? 'is_fork' : 'non_fork'%>">
           <label for="repo_<%= idx %>">
             <strong><%= repo.full_name %></strong>
             <% if repo.description && repo.description.length > 0 %>
