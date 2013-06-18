@@ -2,8 +2,8 @@
 
 require 'yaml'
 
-#{}`git submodule init`
-#{}`git submodule update --recursive`
+`git submodule init`
+`git submodule update --recursive`
 
 root = File.join(File.dirname(__FILE__), "..")
 license_dir = File.join(root, "deps", "choosealicense.com", "licenses")
@@ -24,7 +24,7 @@ licenses.each do |license|
   
   File.open(File.join(root, "deps", "licenses", "#{link}.txt"), "w") do |f|
     # this ensures licenses like GPL still have centered text
-    f.write(s.post_match().gsub(/^\r\n/, "").gsub(/\r\n$/, ""))
+    f.write(s.post_match().sub(/^\n+/, ""))
   end
 
   license_array << { :title => title, :link => link}
