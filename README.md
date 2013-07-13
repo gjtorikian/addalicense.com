@@ -1,4 +1,4 @@
-Automatically a license to your GitHub repositories!
+Automatically license to your GitHub repositories!
 
 # Installing
 
