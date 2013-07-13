@@ -8,6 +8,6 @@ Once you find a license you enjoy from [choosealicense.com](http://www.chooseali
 
 ## Disclaimer
 
-**This site is __not__ endorsed by or affiliated with GitHub**. But I work there.
+**This site is __not__ owned by or affiliated with GitHub**. But I work there.
 
 We are not lawyers. Well, most of us anyways. It is not the goal of this site to provide legal advice. The goal of this site is to help you license your public repositories with popular open source licenses. If you have any questions regarding the right license for your code or any other legal issues relating to it, it's always best to consult with a professional.
