@@ -35,7 +35,7 @@ $(document).ready ->
 
   $('#license-spinner').change ->
     selected = $("select option:selected")
-    $('#license-selection').html "Great! You selected <a href='http://www.choosealicense.com/licenses/#{selected.val()}'>#{selected.text()}</a>!"
+    $('#license-selection').html "Great! You selected <a href='http://choosealicense.com/licenses/#{selected.val()}'>#{selected.text()}</a>!"
 
   validator = new FormValidator("license-form", [
     name: "license"
