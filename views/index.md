@@ -1,6 +1,6 @@
 # Add A License
 
-So you've picked an open-source license from [choosealicense.com](http://www.choosealicense.com), huh? **FANTASTIC!**
+So you've picked an open-source license from [choosealicense.com](http://choosealicense.com), huh? **FANTASTIC!**
 
 Now comes the fun part: adding that license to all your public repositories. This website will do just that. It'll give you a list of your public repositories that don't have a license file. You'll pick which license you want, and it'll add the new license file to your repos. **SIMPLE!**
 

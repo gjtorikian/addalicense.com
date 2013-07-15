@@ -4,7 +4,7 @@ We want to help developers choose a license for their source code.
 
 If you already know what you're doing and have a license you prefer to use, that's great! We're not here to change your mind. But if you are bewildered by the large number of OSS license choices, maybe we can help.
 
-Once you find a license you enjoy from [choosealicense.com](http://www.choosealicense.com), this site will help you apply it to all your public repositories.
+Once you find a license you enjoy from [choosealicense.com](http://choosealicense.com), this site will help you apply it to all your public repositories.
 
 ## Disclaimer
 
