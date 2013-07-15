@@ -57,7 +57,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 }
 
 body {
-  background: #f5f1ec url(images/bg.jpg);
+  background: #f5f1ec;
   color: #7e7974;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
