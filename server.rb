@@ -48,6 +48,7 @@ class AddALicense < Sinatra::Base
   before do
     if authenticated?
       @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
+      @name = @octokit.user[:name] || @octokit.user[:login]
     end
 
     request.path_info.sub! %r{/$}, ''
@@ -81,13 +82,13 @@ class AddALicense < Sinatra::Base
   end
 
   get '/repos' do
-    erb :repos, :layout => false
+    erb :repos, :layout => false, :locals => { :octokit => @octokit }
   end
 
   post '/add-licenses' do
     year = Time.new.year.to_s
     license = File.read(File.join(DEPENDENCY_PATH, "licenses", "#{params['license']}.txt"))
-    license = license.gsub(/<<year>>/, year).gsub(/<<fullname>>/, github_user.name)
+    license = license.gsub(/<<year>>/, year).gsub(/<<fullname>>/, @name)
     message = !params["message"].empty? ? params["message"] : "Add LICENSE file via addalicense.com"
 
     params["repositories"].each do |repository|
@@ -121,7 +122,7 @@ class AddALicense < Sinatra::Base
       public_repos = []
       hydra = Typhoeus::Hydra.hydra
       @octokit.repositories.each_with_index do |repo, idx|
-        request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=6dcb06ac5641729c8e9153fde963c9dc3c434431")
+        request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{GH_ADDALICENSE_ACCESS_TOKEN}")
         request.on_complete do |response|
           if response.success?
             public_repos << repo unless JSON.load(response.response_body).any? {|f| f["name"] =~ /^LICENSE\.?/i}
