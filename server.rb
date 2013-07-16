@@ -81,11 +81,7 @@ class AddALicense < Sinatra::Base
   end
 
   get '/repos' do
-    if !authenticated?
-      authenticate!
-    else
-      erb :repos, :layout => false, :locals => { :login => github_user.login, :octokit => @octokit }
-    end
+    erb :repos, :layout => false
   end
 
   post '/add-licenses' do
