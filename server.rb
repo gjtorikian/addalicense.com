@@ -122,7 +122,7 @@ class AddALicense < Sinatra::Base
       public_repos = []
       hydra = Typhoeus::Hydra.hydra
       @octokit.repositories.each_with_index do |repo, idx|
-        request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{GH_ADDALICENSE_ACCESS_TOKEN}")
+        request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
         request.on_complete do |response|
           if response.success?
             public_repos << repo unless JSON.load(response.response_body).any? {|f| f["name"] =~ /^LICENSE\.?/i}
