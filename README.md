@@ -9,3 +9,9 @@ script/license_scraper.rb
 bundle exec shotgun
 open http://127.0.0.1:9393/
 ```
+
+# Grabbing dependencies
+
+```
+script/license_scraper.rb
+```

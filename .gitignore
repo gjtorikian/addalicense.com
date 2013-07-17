@@ -17,5 +17,4 @@ tmp
 _yardoc
 doc/
 
-deps/choosealicense.com
 benchmark.rb
