@@ -31,11 +31,15 @@ licenses.each do |license|
   File.open(File.join(root, "deps", "licenses", "#{link}.txt"), "w") do |f|
     # this ensures licenses like GPL still have centered text
     content = s.post_match().sub(/^\n+/, "")
-    content.gsub!(/END OF TERMS AND CONDITIONS[^\0]+/, "")
+
+    # remove unnecessary information
+    s.skip_until(/END OF TERMS AND CONDITIONS/)
+    content = content.sub(s.rest(), "") if s.rest()
+
     f.write(content)
   end
 
-  license_array << { :title => title, :link => link}
+  license_array << { :title => title, :link => link }
 end
 
 File.open(File.join(root, "deps", "licenses.yml"), "w") do |f|
