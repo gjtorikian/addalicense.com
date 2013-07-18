@@ -49,6 +49,8 @@ class AddALicense < Sinatra::Base
     if authenticated?
       @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
       @name = @octokit.user[:name] || @octokit.user[:login]
+      @login = @octokit.user[:login]
+      @email = @octokit.user[:email] || ""
     end
 
     request.path_info.sub! %r{/$}, ''
@@ -86,19 +88,19 @@ class AddALicense < Sinatra::Base
   end
 
   post '/add-licenses' do
-    year = Time.new.year.to_s
     license = File.read(File.join(DEPENDENCY_PATH, "licenses", "#{params['license']}.txt"))
 
-    license.gsub!(/<<year>>/, year)
-    license.gsub!(/<<fullname>>/, @name)
-    license.gsub!(/<<copyright holders>>/, @name)
+    license.gsub!(/[year]/, Time.new.year.to_s)
+    license.gsub!(/[login]/, @login)
+    license.gsub!(/[email]/, @email)
+    license.gsub!(/[fullname]/, @name)
 
     message = !params["message"].empty? ? params["message"] : "Add LICENSE file via addalicense.com"
 
     params["repositories"].each do |repo|
       repo_info = @octokit.repository(repo)
-      license.gsub!(/<<project>>/, repo_info.name)
-      license.gsub!(/<<description>>/, repo_info.description || "")
+      license.gsub!(/[project]/, repo_info.name)
+      license.gsub!(/[description]/, repo_info.description || "")
       
       @octokit.create_content(repo, "LICENSE.txt",  message, license)
     end
