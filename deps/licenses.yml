@@ -1,27 +1,43 @@
 ---
 - :title: Affero GPL
   :link: agpl
+  :filename: 
 - :title: Apache v2 License
   :link: apache
+  :filename: 
 - :title: Artistic License 2.0
   :link: artistic
+  :filename: 
 - :title: BSD (3-Clause) License
   :link: bsd-3-clause
+  :filename: 
 - :title: BSD 2-Clause license
   :link: bsd
+  :filename: 
 - :title: Eclipse Public License v1.0
   :link: eclipse
+  :filename: 
 - :title: GPL v2
   :link: gpl-v2
+  :filename: 
 - :title: GPL v3
   :link: gpl-v3
+  :filename: 
 - :title: LGPL v2.1
   :link: lgpl-v2.1
+  :filename: 
 - :title: LGPL v3
   :link: lgpl-v3
+  :filename: 
 - :title: MIT License
   :link: mit
+  :filename: 
 - :title: Mozilla Public License Version 2.0
   :link: mozilla
+  :filename: 
 - :title: No License
   :link: no-license
+  :filename: 
+- :title: Public Domain (Unlicense)
+  :link: public-domain
+  :filename: UNLICENSE
