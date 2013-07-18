@@ -90,19 +90,24 @@ class AddALicense < Sinatra::Base
   post '/add-licenses' do
     license = File.read(File.join(DEPENDENCY_PATH, "licenses", "#{params['license']}.txt"))
 
-    license.gsub!(/[year]/, Time.new.year.to_s)
-    license.gsub!(/[login]/, @login)
-    license.gsub!(/[email]/, @email)
-    license.gsub!(/[fullname]/, @name)
+    license.gsub!(/\[year\]/, Time.new.year.to_s)
+    license.gsub!(/\[login\]/, @login)
+    license.gsub!(/\[email\]/, @email)
+    license.gsub!(/\[fullname\]/, @name)
 
     message = !params["message"].empty? ? params["message"] : "Add LICENSE file via addalicense.com"
+    license_hash = LICENSES_HASH.detect { |l| l[:link] == params['license'] }
+    filename = license_hash[:filename] || "LICENSE.txt"
 
     params["repositories"].each do |repo|
       repo_info = @octokit.repository(repo)
-      license.gsub!(/[project]/, repo_info.name)
-      license.gsub!(/[description]/, repo_info.description || "")
-      
-      @octokit.create_content(repo, "LICENSE.txt",  message, license)
+      name = repo_info.name
+      description = repo_info.description || ""
+
+      license.gsub!(/\[project\]/, name)
+      license.gsub!(/\[description\]/, description)
+
+      @octokit.create_content(repo, filename,  message, license)
     end
 
     redirect '/finished'
