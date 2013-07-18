@@ -21,8 +21,10 @@ licenses.each do |license|
   first_empty_line = license_file.index(/^\s*$/) 
 
   license_metadata = license_file[4..first_empty_line]
-  title = license_metadata.match(/title: (.+)\n/)[1].strip
-  link = license_metadata.match(/permalink: (.+)\n/)[1][0..-2].strip
+
+  title = license_metadata.match(/title:\s+(.+)\n/)[1].strip
+  link = license_metadata.match(/permalink:\s+\/licenses\/(.+)\n/)[1][0..-2].strip.sub(/licenses\/\//, "")
+  filename = license_metadata.match(/filename:\s+(.+)\n/)[1][0..-1].strip if license_metadata.match(/filename: (.+)\n/)
 
   s = StringScanner.new(license_file)
   s.scan(/\-{3}/)
@@ -31,11 +33,15 @@ licenses.each do |license|
   File.open(File.join(root, "deps", "licenses", "#{link}.txt"), "w") do |f|
     # this ensures licenses like GPL still have centered text
     content = s.post_match().sub(/^\n+/, "")
-    content.gsub!(/END OF TERMS AND CONDITIONS[^\0]+/, "")
+
+    # remove unnecessary information
+    s.skip_until(/END OF TERMS AND CONDITIONS/)
+    content = content.sub(s.rest(), "") if s.rest()
+
     f.write(content)
   end
 
-  license_array << { :title => title, :link => link}
+  license_array << { :title => title, :link => link, :filename => filename }
 end
 
 File.open(File.join(root, "deps", "licenses.yml"), "w") do |f|
