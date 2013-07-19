@@ -36,7 +36,7 @@ class AddALicense < Sinatra::Base
   }
 
   set :github_options, {
-    :scopes    => "user, public_repo",
+    :scopes    => "public_repo",
     :secret    => ENV['GH_ADDALICENSE_SECRET_ID'],
     :client_id => ENV['GH_ADDALICENSE_CLIENT_ID'],
     :callback_url => "/callback"
