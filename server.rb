@@ -136,9 +136,7 @@ class AddALicense < Sinatra::Base
     def repositories_missing_licenses
       public_repos = []
       hydra = Typhoeus::Hydra.hydra
-
       @github_user.api.repositories.each_with_index do |repo, idx|
-
         request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
         request.on_complete do |response|
           if response.success?
