@@ -46,6 +46,7 @@ class AddALicense < Sinatra::Base
   # trim trailing slashes
   before do
     if authenticated?
+      Octokit.auto_paginate = true
       @github_user = github_user
       @name = github_user.api.user.name || github_user.api.user.login
       @login = github_user.api.user.login
