@@ -46,6 +46,7 @@ class AddALicense < Sinatra::Base
   # trim trailing slashes
   before do
     if authenticated?
+      @github_user = github_user
       @name = github_user.api.user.name || github_user.api.user.login
       @login = github_user.api.user.login
       @email = github_user.api.user.email || ""
@@ -135,7 +136,7 @@ class AddALicense < Sinatra::Base
       public_repos = []
       hydra = Typhoeus::Hydra.hydra
       puts github_user.api.repositories
-      github_user.api.repositories.each_with_index do |repo, idx|
+      @github_user.api.repositories.each_with_index do |repo, idx|
         request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
         request.on_complete do |response|
           if response.success?
