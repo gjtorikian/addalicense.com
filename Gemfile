@@ -7,7 +7,7 @@ gem 'redcarpet',  '=2.2.2'
 gem 'sass', '3.2.9'
 gem 'coffee-script', '2.2.0'
 gem "json",        "1.7.7"
-gem "octokit",    :git => "https://github.com/octokit/octokit.rb.git"
+gem "octokit",   "3.3.1"
 gem 'thin', '1.5.1'
 gem 'typhoeus', '0.6.3'
 

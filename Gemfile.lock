@@ -1,50 +1,37 @@
-GIT
-  remote: https://github.com/octokit/octokit.rb.git
-  revision: 752e387e34c4190c5fd2c9451744e056df5023e2
-  specs:
-    octokit (1.24.0)
-      addressable (~> 2.2)
-      faraday (~> 0.8)
-      faraday_middleware (~> 0.9)
-      hashie (~> 2.0)
-      multi_json (~> 1.3)
-      netrc (~> 0.7.7)
-
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.4)
-    backports (3.3.2)
+    addressable (2.3.6)
+    backports (3.6.0)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.6.2)
+    coffee-script-source (1.8.0)
     daemons (1.1.9)
     ethon (0.5.12)
       ffi (>= 1.3.0)
       mime-types (~> 1.18)
     eventmachine (1.0.3)
-    execjs (1.4.0)
-      multi_json (~> 1.0)
-    faraday (0.8.7)
-      multipart-post (~> 1.1)
-    faraday_middleware (0.9.0)
-      faraday (>= 0.7.4, < 0.9)
-    ffi (1.9.0)
-    hashie (2.0.5)
+    execjs (2.2.1)
+    faraday (0.9.0)
+      multipart-post (>= 1.2, < 3)
+    ffi (1.9.3)
     jsmin (1.0.1)
     json (1.7.7)
-    mime-types (1.23)
-    multi_json (1.7.7)
-    multipart-post (1.2.0)
-    netrc (0.7.7)
+    mime-types (1.25.1)
+    multipart-post (2.0.0)
+    octokit (3.3.1)
+      sawyer (~> 0.5.3)
     rack (1.5.2)
-    rack-protection (1.5.0)
+    rack-protection (1.5.3)
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
     redcarpet (2.2.2)
     sass (3.2.9)
+    sawyer (0.5.5)
+      addressable (~> 2.3.5)
+      faraday (~> 0.8, < 0.10)
     shotgun (0.9)
       rack (>= 1.0)
     sinatra (1.4.2)
@@ -67,7 +54,7 @@ GEM
     tilt (1.4.1)
     typhoeus (0.6.3)
       ethon (~> 0.5.11)
-    warden (1.2.1)
+    warden (1.2.3)
       rack (>= 1.0)
     warden-github (0.13.2)
       octokit (>= 1.22.0)
@@ -79,7 +66,7 @@ PLATFORMS
 DEPENDENCIES
   coffee-script (= 2.2.0)
   json (= 1.7.7)
-  octokit!
+  octokit (= 3.3.1)
   redcarpet (= 2.2.2)
   sass (= 3.2.9)
   shotgun (= 0.9)
