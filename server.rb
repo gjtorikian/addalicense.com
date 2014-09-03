@@ -141,6 +141,8 @@ class AddALicense < Sinatra::Base
         request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
         request.on_complete do |response|
           if response.success?
+            puts JSON.load(response.response_body).any? {|f| f["name"] =~ /^(UNLICENSE|LICENSE|COPYING|LICENCE)\.?/i}
+            puts response.response_body
             public_repos << repo unless JSON.load(response.response_body).any? {|f| f["name"] =~ /^(UNLICENSE|LICENSE|COPYING|LICENCE)\.?/i}
           elsif response.timed_out?
             puts "#{repo.full_name} got a time out"
