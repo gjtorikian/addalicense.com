@@ -66,7 +66,6 @@ PLATFORMS
 DEPENDENCIES
   coffee-script (= 2.2.0)
   json (= 1.7.7)
-  octokit (= 3.3.1)
   redcarpet (= 2.2.2)
   sass (= 3.2.9)
   shotgun (= 0.9)

@@ -1,6 +1,5 @@
 require 'sinatra/auth/github'
 require 'sinatra/assetpack'
-require 'octokit'
 require 'redcarpet'
 require 'sass'
 require 'yaml'
