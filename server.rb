@@ -48,8 +48,8 @@ class AddALicense < Sinatra::Base
   before do
     if authenticated?
       @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
-      @name = @octokit.user[:name] || @octokit.user[:login]
-      @login = @octokit.user[:login]
+      @name = @octokit.user[:name] || @octokit.user.login
+      @login = @octokit.user.login
       @email = @octokit.user[:email] || ""
     end
 
