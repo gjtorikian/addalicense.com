@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'sinatra', '1.4.2'
-gem 'sinatra_auth_github', '~> 0.13.3'
+gem 'sinatra_auth_github', '~> 1.0'
 gem 'sinatra-assetpack', '0.2.2'
 gem 'redcarpet',  '=2.2.2'
 gem 'sass', '3.2.9'
