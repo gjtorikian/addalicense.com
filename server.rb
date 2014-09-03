@@ -88,7 +88,6 @@ class AddALicense < Sinatra::Base
   end
 
   post '/add-licenses' do
-    puts "~~~", params, "~~~~"
     license = File.read(File.join(DEPENDENCY_PATH, "licenses", "#{params['license']}.txt"))
 
     license.gsub!(/\[year\]/, Time.new.year.to_s)
