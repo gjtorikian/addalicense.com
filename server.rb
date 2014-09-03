@@ -47,10 +47,9 @@ class AddALicense < Sinatra::Base
   # trim trailing slashes
   before do
     if authenticated?
-      @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
-      @name = @octokit.user[:name] || @octokit.user.login
-      @login = @octokit.user.login
-      @email = @octokit.user[:email] || ""
+      @name = github_user.api.user.name || github_user.api.user.login
+      @login = github_user.api.user.login
+      @email = github_user.api.user.email || ""
     end
 
     request.path_info.sub! %r{/$}, ''
@@ -84,7 +83,7 @@ class AddALicense < Sinatra::Base
   end
 
   get '/repos' do
-    erb :repos, :layout => false, :locals => { :octokit => @octokit }
+    erb :repos, :layout => false
   end
 
   post '/add-licenses' do
@@ -100,14 +99,14 @@ class AddALicense < Sinatra::Base
     filename = license_hash[:filename] || "LICENSE.txt"
 
     params["repositories"].each do |repo|
-      repo_info = @octokit.repository(repo)
+      repo_info = github_user.api.repository(repo)
       name = repo_info.name
       description = repo_info.description || ""
 
       license.gsub!(/\[project\]/, name)
       license.gsub!(/\[description\]/, description)
 
-      @octokit.create_content(repo, filename,  message, license)
+      github_user.api.create_content(repo, filename,  message, license)
     end
 
     redirect '/finished'
@@ -136,7 +135,7 @@ class AddALicense < Sinatra::Base
     def repositories_missing_licenses
       public_repos = []
       hydra = Typhoeus::Hydra.hydra
-      @octokit.repositories.each_with_index do |repo, idx|
+      github_user.api.repositories.each_with_index do |repo, idx|
         request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
         request.on_complete do |response|
           if response.success?
