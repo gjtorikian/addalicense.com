@@ -137,20 +137,23 @@ class AddALicense < Sinatra::Base
       hydra = Typhoeus::Hydra.hydra
       puts github_user.api.repositories
       @github_user.api.repositories.each_with_index do |repo, idx|
+        puts repo.full_name
         request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
         request.on_complete do |response|
           if response.success?
             public_repos << repo unless JSON.load(response.response_body).any? {|f| f["name"] =~ /^(UNLICENSE|LICENSE|COPYING|LICENCE)\.?/i}
           elsif response.timed_out?
-            p "#{repo.full_name} got a time out"
+            puts "#{repo.full_name} got a time out"
           elsif response.code == 0
             # Could not get an http response, something's wrong.
-            p "#{repo.full_name} " + response.curl_error_message
+            puts "#{repo.full_name} " + response.curl_error_message
           elsif response.code == 404
             # don't worry about it; the repo is probably empty
+            public_repos << repo
+            puts "404, but that's ok."
           else
             # Received a non-successful http response.
-            p "#{repo.full_name} HTTP request failed: " + response.code.to_s
+            puts "#{repo.full_name} HTTP request failed: " + response.code.to_s
           end
         end
         hydra.queue(request)
