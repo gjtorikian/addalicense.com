@@ -136,14 +136,12 @@ class AddALicense < Sinatra::Base
     def repositories_missing_licenses
       public_repos = []
       hydra = Typhoeus::Hydra.hydra
-      puts github_user.api.repositories
+
       @github_user.api.repositories.each_with_index do |repo, idx|
-        puts repo.full_name
+
         request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
         request.on_complete do |response|
           if response.success?
-            puts JSON.load(response.response_body).any? {|f| f["name"] =~ /^(UNLICENSE|LICENSE|COPYING|LICENCE)\.?/i}
-            puts response.response_body
             public_repos << repo unless JSON.load(response.response_body).any? {|f| f["name"] =~ /^(UNLICENSE|LICENSE|COPYING|LICENCE)\.?/i}
           elsif response.timed_out?
             puts "#{repo.full_name} got a time out"
