@@ -1,6 +1,5 @@
 require 'sinatra/auth/github'
 require 'sinatra/assetpack'
-require 'octokit'
 require 'redcarpet'
 require 'sass'
 require 'yaml'
@@ -47,10 +46,11 @@ class AddALicense < Sinatra::Base
   # trim trailing slashes
   before do
     if authenticated?
-      @octokit = Octokit::Client.new(:login => github_user.login, :oauth_token => github_user["token"], :auto_traversal => true)
-      @name = @octokit.user[:name] || @octokit.user[:login]
-      @login = @octokit.user[:login]
-      @email = @octokit.user[:email] || ""
+      Octokit.auto_paginate = true
+      @github_user = github_user
+      @name = github_user.api.user.name || github_user.api.user.login
+      @login = github_user.api.user.login
+      @email = github_user.api.user.email || ""
     end
 
     request.path_info.sub! %r{/$}, ''
@@ -84,7 +84,7 @@ class AddALicense < Sinatra::Base
   end
 
   get '/repos' do
-    erb :repos, :layout => false, :locals => { :octokit => @octokit }
+    erb :repos, :layout => false
   end
 
   post '/add-licenses' do
@@ -100,14 +100,14 @@ class AddALicense < Sinatra::Base
     filename = license_hash[:filename] || "LICENSE.txt"
 
     params["repositories"].each do |repo|
-      repo_info = @octokit.repository(repo)
+      repo_info = github_user.api.repository(repo)
       name = repo_info.name
       description = repo_info.description || ""
 
       license.gsub!(/\[project\]/, name)
       license.gsub!(/\[description\]/, description)
 
-      @octokit.create_content(repo, filename,  message, license)
+      github_user.api.create_content(repo, filename,  message, license)
     end
 
     redirect '/finished'
@@ -136,21 +136,23 @@ class AddALicense < Sinatra::Base
     def repositories_missing_licenses
       public_repos = []
       hydra = Typhoeus::Hydra.hydra
-      @octokit.repositories.each_with_index do |repo, idx|
+      @github_user.api.repositories.each_with_index do |repo, idx|
         request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
         request.on_complete do |response|
           if response.success?
             public_repos << repo unless JSON.load(response.response_body).any? {|f| f["name"] =~ /^(UNLICENSE|LICENSE|COPYING|LICENCE)\.?/i}
           elsif response.timed_out?
-            p "#{repo.full_name} got a time out"
+            puts "#{repo.full_name} got a time out"
           elsif response.code == 0
             # Could not get an http response, something's wrong.
-            p "#{repo.full_name} " + response.curl_error_message
+            puts "#{repo.full_name} " + response.curl_error_message
           elsif response.code == 404
             # don't worry about it; the repo is probably empty
+            public_repos << repo
+            puts "404, but that's ok."
           else
             # Received a non-successful http response.
-            p "#{repo.full_name} HTTP request failed: " + response.code.to_s
+            puts "#{repo.full_name} HTTP request failed: " + response.code.to_s
           end
         end
         hydra.queue(request)
