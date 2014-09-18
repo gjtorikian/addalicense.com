@@ -27,6 +27,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rake (10.3.2)
     redcarpet (2.2.2)
     sass (3.2.9)
     sawyer (0.5.5)
@@ -66,6 +67,7 @@ PLATFORMS
 DEPENDENCIES
   coffee-script (= 2.2.0)
   json (= 1.7.7)
+  rake
   redcarpet (= 2.2.2)
   sass (= 3.2.9)
   shotgun (= 0.9)

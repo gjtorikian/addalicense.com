@@ -12,4 +12,5 @@ gem 'typhoeus', '0.6.3'
 
 group :development do
   gem 'shotgun', '0.9'
+  gem 'rake'
 end
