@@ -95,9 +95,9 @@ class AddALicense < Sinatra::Base
     license.gsub!(/\[email\]/, @email)
     license.gsub!(/\[fullname\]/, @name)
 
-    message = !params["message"].empty? ? params["message"] : "Add LICENSE file via addalicense.com"
+    message = params["message"].empty? ? "Add license file via addalicense.com" : params["message"]
     license_hash = LICENSES_HASH.detect { |l| l[:link] == params['license'] }
-    filename = license_hash[:filename] || "LICENSE.txt"
+    filename = license_hash[:filename] || params['filename']
 
     params["repositories"].each do |repo|
       repo_info = github_user.api.repository(repo)
