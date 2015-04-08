@@ -10,6 +10,10 @@ bundle exec shotgun
 open http://127.0.0.1:9393/
 ```
 
+# Environment variables
+
+Be sure to set `GH_ADDALICENSE_CLIENT_ID` and `GH_ADDALICENSE_SECRET_ID`.
+
 # Grabbing dependencies
 
 ```
