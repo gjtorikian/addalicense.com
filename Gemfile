@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'octokit', '~> 4.0'
 gem 'sinatra', '1.4.2'
 gem 'sinatra_auth_github', '~> 1.0'
 gem 'sinatra-assetpack', '0.2.2'
