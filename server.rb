@@ -150,7 +150,7 @@ class AddALicense < Sinatra::Base
       repos = api_client.repositories
       orgs.each { |org| repos.concat(api_client.organization_repositories(org)) }
       repos.each do |repo|
-        request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}", headers: { Authorization: "token #{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}", Accept:  'application/vnd.github.drax-preview+json' })
+        request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}", headers: { Authorization: "token #{api_client.access_token}", Accept:  'application/vnd.github.drax-preview+json' })
         request.on_complete do |response|
           if response.success?
             body = JSON.load(response.response_body)
