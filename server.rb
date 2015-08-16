@@ -11,11 +11,11 @@ class AddALicense < Sinatra::Base
   set :root, File.dirname(__FILE__)
   enable :sessions
 
-  DEPENDENCY_PATH = File.join(File.dirname(__FILE__), "deps")
-  LICENSES_HASH = YAML.load(File.read(File.join(DEPENDENCY_PATH, "licenses.yml")))
+  DEPENDENCY_PATH = File.join(File.dirname(__FILE__), 'deps')
+  LICENSES_HASH = YAML.load(File.read(File.join(DEPENDENCY_PATH, 'licenses.yml')))
 
   configure :development, :testing do
-    set :session_secret, "JUST_FOR_FIXING"
+    set :session_secret, 'JUST_FOR_FIXING'
   end
 
   register Sinatra::AssetPack
@@ -28,15 +28,15 @@ class AddALicense < Sinatra::Base
       '/css/*.css'
     ]
 
-    js_compression :closure, :level => "SIMPLE_OPTIMIZATIONS"
+    js_compression :closure, :level => 'SIMPLE_OPTIMIZATIONS'
     css_compression :sass
   }
 
   set :github_options, {
-    :scopes    => "public_repo",
+    :scopes    => 'public_repo',
     :secret    => ENV['GH_ADDALICENSE_SECRET_ID'],
     :client_id => ENV['GH_ADDALICENSE_CLIENT_ID'],
-    :callback_url => "/callback"
+    :callback_url => '/callback'
   }
 
   register Sinatra::Auth::Github
@@ -48,7 +48,7 @@ class AddALicense < Sinatra::Base
       @github_user = github_user
       @name = github_user.api.user.name || github_user.api.user.login
       @login = github_user.api.user.login
-      @email = github_user.api.user.email || ""
+      @email = github_user.api.user.email || ''
     end
 
     request.path_info.sub! %r{/$}, ''
@@ -75,7 +75,7 @@ class AddALicense < Sinatra::Base
 
   get '/callback' do
     if authenticated?
-      redirect "/add"
+      redirect '/add'
     else
       authenticate!
     end
@@ -86,21 +86,21 @@ class AddALicense < Sinatra::Base
   end
 
   post '/add-licenses' do
-    license = File.read(File.join(DEPENDENCY_PATH, "licenses", "#{params['license']}.txt"))
+    license = File.read(File.join(DEPENDENCY_PATH, 'licenses', "#{params['license']}.txt"))
 
     license.gsub!(/\[year\]/, Time.new.year.to_s)
     license.gsub!(/\[login\]/, @login)
     license.gsub!(/\[email\]/, @email)
     license.gsub!(/\[fullname\]/, @name)
 
-    message = params["message"].empty? ? "Add license file via addalicense.com" : params["message"]
+    message = params['message'].empty? ? 'Add license file via addalicense.com' : params["message"]
     license_hash = LICENSES_HASH.detect { |l| l[:link] == params['license'] }
     filename = license_hash[:filename] || params['filename']
 
-    params["repositories"].each do |repo|
+    params['repositories'].each do |repo|
       repo_info = github_user.api.repository(repo)
       name = repo_info.name
-      description = repo_info.description || ""
+      description = repo_info.description || ''
 
       license.gsub!(/\[project\]/, name)
       license.gsub!(/\[description\]/, description)
@@ -125,8 +125,8 @@ class AddALicense < Sinatra::Base
   end
 
   helpers do
-    def title(number=nil)
-      title = "Add a License"
+    def title(number = nil)
+      title = 'Add a License'
     end
 
     # doing it in parallel is way more performant
@@ -141,7 +141,7 @@ class AddALicense < Sinatra::Base
         request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
         request.on_complete do |response|
           if response.success?
-            public_repos << repo unless JSON.load(response.response_body).any? {|f| f["name"] =~ /^(UNLICENSE|LICENSE|COPYING|LICENCE)\.?/i}
+            public_repos << repo unless JSON.load(response.response_body).any? {|f| f['name'] =~ /^(UNLICENSE|LICENSE|COPYING|LICENCE)\.?/i}
           elsif response.timed_out?
             puts "#{repo.full_name} got a time out"
           elsif response.code == 0
@@ -159,7 +159,7 @@ class AddALicense < Sinatra::Base
         hydra.queue(request)
       end
       hydra.run
-      return public_repos.sort_by { |r| r['full_name'] }
+      public_repos.sort_by { |r| r['full_name'] }
     end
   end
 end
