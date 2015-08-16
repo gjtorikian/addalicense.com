@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'unicorn',              '4.6.2'
 gem 'octokit', '~> 4.0'
 gem 'sinatra', '1.4.2'
 gem 'sinatra_auth_github', '~> 1.0'

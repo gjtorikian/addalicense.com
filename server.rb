@@ -18,9 +18,6 @@ class AddALicense < Sinatra::Base
     set :session_secret, "JUST_FOR_FIXING"
   end
 
-  # "Thin is a supremely better performing web server so do please use it!"
-  set :server, %w[thin webrick]
-
   register Sinatra::AssetPack
   assets {
     js :app, [
