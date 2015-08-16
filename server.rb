@@ -4,8 +4,8 @@ require 'redcarpet'
 require 'sass'
 require 'yaml'
 require 'pp'
-require "base64"
-require "typhoeus"
+require 'base64'
+require 'typhoeus'
 
 class AddALicense < Sinatra::Base
   set :root, File.dirname(__FILE__)
@@ -33,7 +33,7 @@ class AddALicense < Sinatra::Base
   }
 
   set :github_options, {
-    :scopes    => 'public_repo',
+    :scopes    => 'public_repo, read:org',
     :secret    => ENV['GH_ADDALICENSE_SECRET_ID'],
     :client_id => ENV['GH_ADDALICENSE_CLIENT_ID'],
     :callback_url => '/callback'
@@ -43,14 +43,7 @@ class AddALicense < Sinatra::Base
 
   # trim trailing slashes
   before do
-    if authenticated?
-      Octokit.auto_paginate = true
-      @github_user = github_user
-      @name = github_user.api.user.name || github_user.api.user.login
-      @login = github_user.api.user.login
-      @email = github_user.api.user.email || ''
-    end
-
+    Octokit.auto_paginate = true
     request.path_info.sub! %r{/$}, ''
   end
 
@@ -61,16 +54,30 @@ class AddALicense < Sinatra::Base
   # for all markdown files, keep using layout.erb
   set :markdown, :layout_engine => :erb
 
+  def name
+    @github_user.api.user.name || @github_user.api.user.login
+  end
+
+  def login
+    @github_user.api.user.login
+  end
+
+  def email
+    @github_user.api.user.email || ''
+  end
+
+  def api_client
+    @github_user.api
+  end
+
   get '/' do
     markdown :index
   end
 
   get '/add' do
-    if !authenticated?
-      authenticate!
-    else
-      erb :add, :locals => { :login => github_user.login, :licenses => LICENSES_HASH }
-    end
+    authenticate! unless authenticated?
+    @github_user = github_user
+    erb :add, :locals => { :login => login, :licenses => LICENSES_HASH }
   end
 
   get '/callback' do
@@ -82,30 +89,34 @@ class AddALicense < Sinatra::Base
   end
 
   get '/repos' do
+    authenticate! unless authenticated?
+    @github_user = github_user
     erb :repos, :layout => false
   end
 
   post '/add-licenses' do
+    authenticate! unless authenticated?
+    @github_user = github_user
     license = File.read(File.join(DEPENDENCY_PATH, 'licenses', "#{params['license']}.txt"))
 
     license.gsub!(/\[year\]/, Time.new.year.to_s)
-    license.gsub!(/\[login\]/, @login)
-    license.gsub!(/\[email\]/, @email)
-    license.gsub!(/\[fullname\]/, @name)
+    license.gsub!(/\[login\]/, login)
+    license.gsub!(/\[email\]/, email)
+    license.gsub!(/\[fullname\]/, name)
 
-    message = params['message'].empty? ? 'Add license file via addalicense.com' : params["message"]
+    message = params['message'].empty? ? 'Add license file via addalicense.com' : params['message']
     license_hash = LICENSES_HASH.detect { |l| l[:link] == params['license'] }
     filename = license_hash[:filename] || params['filename']
 
     params['repositories'].each do |repo|
-      repo_info = github_user.api.repository(repo)
+      repo_info = api_client.repository(repo)
       name = repo_info.name
       description = repo_info.description || ''
 
       license.gsub!(/\[project\]/, name)
       license.gsub!(/\[description\]/, description)
 
-      github_user.api.create_content(repo, filename,  message, license)
+      api_client.create_content(repo, filename, message, license)
     end
 
     redirect '/finished'
@@ -133,15 +144,17 @@ class AddALicense < Sinatra::Base
     # rescue block is needed in case a repo is completely empty
     def repositories_missing_licenses
       public_repos = []
+      Octokit.auto_paginate = true
       hydra = Typhoeus::Hydra.hydra
-      orgs = @github_user.api.organizations.collect { |h| h[:login] }
-      repos = @github_user.api.repositories
-      orgs.each { |org| repos.concat(@github_user.api.organization_repositories(org)) }
-      repos.each_with_index do |repo, idx|
-        request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}/contents?access_token=#{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}")
+      orgs = api_client.organizations.collect { |h| h[:login] }
+      repos = api_client.repositories
+      orgs.each { |org| repos.concat(api_client.organization_repositories(org)) }
+      repos.each do |repo|
+        request = Typhoeus::Request.new("https://api.github.com/repos/#{repo.full_name}", headers: { Authorization: "token #{ENV['GH_ADDALICENSE_ACCESS_TOKEN']}", Accept:  'application/vnd.github.drax-preview+json' })
         request.on_complete do |response|
           if response.success?
-            public_repos << repo unless JSON.load(response.response_body).any? {|f| f['name'] =~ /^(UNLICENSE|LICENSE|COPYING|LICENCE)\.?/i}
+            body = JSON.load(response.response_body)
+            public_repos << repo if body['license'].nil?
           elsif response.timed_out?
             puts "#{repo.full_name} got a time out"
           elsif response.code == 0
