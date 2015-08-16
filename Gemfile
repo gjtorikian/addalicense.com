@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.1.6'
 
 gem 'unicorn',              '4.6.2'
 gem 'octokit', '~> 4.0'
