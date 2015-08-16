@@ -7,3 +7,5 @@ echo "==> Installing gem dependencies…"
 bundle check --path vendor/gems 2>&1 > /dev/null || {
   bundle install --binstubs bin --path vendor/gems --quiet
 }
+
+script/license_scraper.rb
