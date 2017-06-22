@@ -1,3 +1,5 @@
+**THIS PROJECT IS NO LONGER UNDER ACTIVE DEVELOPMENT.**
+
 Automatically license your GitHub repositories!
 
 ## Installing
